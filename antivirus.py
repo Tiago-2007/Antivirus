@@ -92,9 +92,11 @@ def escanear_arquivos(filepaths):
 
         if file_hash in hashes_maliciosos:
             mover_para_quarentena(filepath)
+            mostrar_carinha_triste("Ameaça encontrada!!!")  # Quando detectar ameaça
         else:
             if heuristica_possivel(filepath):
                 mover_para_quarentena(filepath)
+                mostrar_carinha_triste("Ameaça encontrada!!!")  # Quando heurística encontrar algo suspeito
             else:
                 mostrar_carinha_feliz(f"Nenhum arquivo infectado encontrado: {filepath}")
 
@@ -207,6 +209,38 @@ def mostrar_carinha_feliz(mensagem):
 
     # Fecha a janela ao clicar em "OK"
     btn_ok = ttk.Button(janela_feliz_instancia, text="OK", command=janela_feliz_instancia.destroy)
+    btn_ok.pack(pady=10)
+
+# Mostra uma carinha triste em uma janela separada
+janela_triste_instancia = None  # Variável global para controlar a instância da janela
+
+def mostrar_carinha_triste(mensagem):
+    global janela_triste_instancia
+
+    if janela_triste_instancia and janela_triste_instancia.winfo_exists():  # Verifica se já existe
+        janela_triste_instancia.lift()  # Traz a janela existente para a frente
+        return
+
+    janela_triste_instancia = tk.Toplevel()
+    janela_triste_instancia.title("Ameaça Encontrada!!!")
+    janela_triste_instancia.geometry("300x300")
+
+    try:
+        imagem = Image.open("triste.png")  # A imagem "triste.png" deve estar no mesmo diretório
+        imagem = imagem.resize((150, 150), Image.LANCZOS)
+        img_tk = ImageTk.PhotoImage(imagem)
+        label_imagem = tk.Label(janela_triste_instancia, image=img_tk)
+        label_imagem.image = img_tk
+        label_imagem.pack(pady=10)
+    except FileNotFoundError:
+        tk.Label(janela_triste_instancia, text="Imagem não encontrada!", font=("Helvetica", 12)).pack(pady=10)
+    except Exception as e:
+        tk.Label(janela_triste_instancia, text=f"Erro ao carregar imagem: {e}", font=("Helvetica", 12)).pack(pady=10)
+
+    tk.Label(janela_triste_instancia, text=mensagem, font=("Helvetica", 14)).pack(pady=10)
+
+    # Fecha a janela ao clicar em "OK"
+    btn_ok = ttk.Button(janela_triste_instancia, text="OK", command=janela_triste_instancia.destroy)
     btn_ok.pack(pady=10)
 
 # Configuração da interface gráfica
