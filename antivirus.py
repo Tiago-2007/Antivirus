@@ -244,10 +244,7 @@ def main():
 
     frame_bottom = ttk.Frame(root, padding="10")
     frame_bottom.pack(fill=tk.X)
-
-    # A linha abaixo foi removida:
-    # ttk.Label(frame_bottom, text="Desenvolvido por Você", font=("Helvetica", 10)).pack()
-
+    
     atualizar_lista_quarentena()
 
     root.mainloop()
