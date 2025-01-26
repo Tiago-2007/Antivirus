@@ -10,3 +10,4 @@ Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/AppData/R
 Arquivo removido da quarentena: TLauncher.exe
 Detecção heurística: arquivo suspeito encontrado: C:/Users/ESCOLA/Downloads/OperaGXSetup (1).exe
 Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Downloads/OperaGXSetup (1).exe
+2025-01-26 19:52:54,790 - Arquivo removido da quarentena: OperaGXSetup (1).exe
