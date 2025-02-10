@@ -1,8 +1,9 @@
-"""
-Programador............: Tiago Machado
-Data...................: 31/10/2024
-Observações............: Um antivirus que identifica se o ficheiro ta corrompido, se tem algum malware
-"""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    Programador............: Tiago Machado
+    Data...................: 31/10/2024
+    Observações............: Um antivirus que identifica se o ficheiro ta corrompido, se tem algum malware
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 import os
 import hashlib
@@ -28,21 +29,21 @@ def configurar_logger():
     handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
     logger.addHandler(handler)
 
-# Função para calcular o hash SHA-256 de um arquivo
-def calcular_hash(filepath):
+# Função para calcular o hash SHA-256 de um ficheiro
+def calcular_hash(caminho_ficheiro):
     sha256 = hashlib.sha256()
     try:
-        with open(filepath, "rb") as f:
+        with open(caminho_ficheiro, "rb") as f:
             while chunk := f.read(8192):
                 sha256.update(chunk)
     except FileNotFoundError:
-        print(f"Arquivo não encontrado: {filepath}")
+        print(f"Ficheiro não encontrado: {caminho_ficheiro}")
         return None
     except PermissionError:
-        print(f"Sem permissão para acessar o arquivo: {filepath}")
+        print(f"Sem permissão para aceder ao ficheiro: {caminho_ficheiro}")
         return None
     except Exception as e:
-        print(f"Erro ao calcular hash do arquivo {filepath}: {e}")
+        print(f"Erro ao calcular hash do ficheiro {caminho_ficheiro}: {e}")
         return None
     return sha256.hexdigest()
 
@@ -71,109 +72,138 @@ def verificar_diretorios():
     except Exception as e:
         print(f"Erro ao verificar/criar diretórios: {e}")
 
-# Escaneia os arquivos especificados
-def escanear_arquivos(filepaths):
-    if not filepaths:
-        messagebox.showerror("Erro", "Nenhum arquivo selecionado.")
+# Função para calcular o hash SHA-256 de um ficheiro
+def calcular_hash(caminho_ficheiro):
+    sha256 = hashlib.sha256()
+    try:
+        with open(caminho_ficheiro, "rb") as f:
+            while chunk := f.read(8192):
+                sha256.update(chunk)
+    except FileNotFoundError:
+        print(f"Ficheiro não encontrado: {caminho_ficheiro}")
+        return None
+    except PermissionError:
+        print(f"Sem permissão para aceder ao ficheiro: {caminho_ficheiro}")
+        return None
+    except Exception as e:
+        print(f"Erro ao calcular hash do ficheiro {caminho_ficheiro}: {e}")
+        return None
+    return sha256.hexdigest()
+
+# Testar a função de hash no arquivo EICAR
+def calcular_hash_eicar():
+    eicar_file = filedialog.askopenfilename(title="Escolha o arquivo EICAR")  # Seleciona o arquivo EICAR
+    if eicar_file:
+        eicar_hash = calcular_hash(eicar_file)
+        print("SHA-256 do arquivo EICAR:", eicar_hash)
+    else:
+        print("Nenhum arquivo EICAR selecionado.")
+
+
+
+# Escaneia os ficheiros especificados
+def escanear_ficheiros(caminhos_ficheiros):
+    if not caminhos_ficheiros:
+        messagebox.showerror("Erro", "Nenhum ficheiro selecionado.")
         return
 
     hashes_maliciosos = carregar_hashes_maliciosos()
 
-    for filepath in filepaths:
-        if not os.path.isfile(filepath):
-            messagebox.showerror("Erro", f"O caminho especificado não é um arquivo válido: {filepath}")
+    for caminho_ficheiro in caminhos_ficheiros:
+        if not os.path.isfile(caminho_ficheiro):
+            messagebox.showerror("Erro", f"O caminho especificado não é um ficheiro válido: {caminho_ficheiro}")
             continue
 
-        file_hash = calcular_hash(filepath)
+        hash_ficheiro = calcular_hash(caminho_ficheiro)
 
-        if file_hash is None:
-            messagebox.showerror("Erro", f"Não foi possível calcular o hash do arquivo: {filepath}")
+        if hash_ficheiro is None:
+            messagebox.showerror("Erro", f"Não foi possível calcular o hash do ficheiro: {caminho_ficheiro}")
             continue
 
-        if file_hash in hashes_maliciosos:
-            mover_para_quarentena(filepath)
+        if hash_ficheiro in hashes_maliciosos:
+            mover_para_quarentena(caminho_ficheiro)
             mostrar_carinha_triste("Ameaça encontrada!!!")  # Quando detectar ameaça
         else:
-            if heuristica_possivel(filepath):
-                mover_para_quarentena(filepath)
+            if heuristica_possivel(caminho_ficheiro):
+                mover_para_quarentena(caminho_ficheiro)
                 mostrar_carinha_triste("Ameaça encontrada!!!")  # Quando heurística encontrar algo suspeito
             else:
-                mostrar_carinha_feliz(f"Nenhum arquivo infectado encontrado: {filepath}")
+                mostrar_carinha_feliz(f"Nenhum ficheiro infectado encontrado: {caminho_ficheiro}")
 
-# Move o arquivo para a quarentena
-def mover_para_quarentena(filepath):
+# Move o ficheiro para a quarentena
+def mover_para_quarentena(caminho_ficheiro):
     verificar_diretorios()
     try:
-        destino = os.path.join(DIRETORIO_QUARENTENA, os.path.basename(filepath))
+        destino = os.path.join(DIRETORIO_QUARENTENA, os.path.basename(caminho_ficheiro))
         if os.path.exists(destino):
-            raise FileExistsError("O arquivo já existe na quarentena.")
-        shutil.move(filepath, destino)
-        log_atividade(f"Arquivo infectado encontrado e movido para quarentena: {filepath}")
-        messagebox.showwarning("ALERTA", f"Arquivo infectado encontrado e movido para quarentena: {filepath}")
+            raise FileExistsError("O ficheiro já existe na quarentena.")
+        shutil.move(caminho_ficheiro, destino)
+        log_atividade(f"Ficheiro infectado encontrado e movido para quarentena: {caminho_ficheiro}")
+        messagebox.showwarning("ALERTA", f"Ficheiro infectado encontrado e movido para quarentena: {caminho_ficheiro}")
         atualizar_lista_quarentena()
     except FileNotFoundError:
-        messagebox.showerror("Erro", "Arquivo não encontrado para mover para a quarentena.")
+        messagebox.showerror("Erro", "Ficheiro não encontrado para mover para a quarentena.")
     except PermissionError:
-        messagebox.showerror("Erro", "Sem permissão para mover o arquivo para a quarentena.")
+        messagebox.showerror("Erro", "Sem permissão para mover o ficheiro para a quarentena.")
     except FileExistsError as e:
         messagebox.showerror("Erro", str(e))
     except Exception as e:
-        messagebox.showerror("Erro", f"Não foi possível mover o arquivo para a quarentena: {e}")
+        messagebox.showerror("Erro", f"Não foi possível mover o ficheiro para a quarentena: {e}")
 
 # Função de detecção heurística (exemplo simples)
-def heuristica_possivel(filepath):
+def heuristica_possivel(caminho_ficheiro):
     try:
-        if filepath.endswith(('.exe', '.bat', '.cmd')) and os.path.getsize(filepath) > 1e6:
-            log_atividade(f"Detecção heurística: arquivo suspeito encontrado: {filepath}")
+        if caminho_ficheiro.endswith(('.exe', '.bat', '.cmd', '.com')) and os.path.getsize(caminho_ficheiro) > 1e6:
+            log_atividade(f"Detecção heurística: ficheiro suspeito encontrado: {caminho_ficheiro}")
             return True
 
-        # Verificação se o arquivo foi modificado nas últimas 24 horas
-        tempo_modificacao = os.path.getmtime(filepath)
+        # Verificação se o ficheiro foi modificado nas últimas 24 horas
+        tempo_modificacao = os.path.getmtime(caminho_ficheiro)
         if tempo_modificacao > (time.time() - 60 * 60 * 24):  # Modificado nas últimas 24 horas
-            log_atividade(f"Arquivo modificado recentemente e suspeito: {filepath}")
+            log_atividade(f"Ficheiro modificado recentemente e suspeito: {caminho_ficheiro}")
             return True
     except FileNotFoundError:
-        print(f"Arquivo não encontrado para análise heurística: {filepath}")
+        print(f"Ficheiro não encontrado para análise heurística: {caminho_ficheiro}")
     except Exception as e:
-        print(f"Erro na análise heurística para {filepath}: {e}")
+        print(f"Erro na análise heurística para {caminho_ficheiro}: {e}")
     return False
 
 # Log de atividades com rotação
 def log_atividade(mensagem):
     logging.info(mensagem)
 
-# Escolher múltiplos arquivos para escanear
-def escolher_arquivos():
-    filepaths = filedialog.askopenfilenames(title="Escolha os arquivos para escanear")
-    if filepaths:
-        escanear_arquivos(filepaths)
+# Escolher múltiplos ficheiros para escanear
+def escolher_ficheiros():
+    caminhos_ficheiros = filedialog.askopenfilenames(title="Escolha os ficheiros para escanear")
+    if caminhos_ficheiros:
+        escanear_ficheiros(caminhos_ficheiros)
 
-# Remover arquivos da quarentena
+# Remover ficheiros da quarentena
 def remover_da_quarentena():
-    selected_file = listbox_quarentena.get(tk.ACTIVE)
-    if not selected_file:
-        messagebox.showinfo("Quarentena", "Nenhum arquivo selecionado.")
+    ficheiro_selecionado = listbox_quarentena.get(tk.ACTIVE)
+    if not ficheiro_selecionado:
+        messagebox.showinfo("Quarentena", "Nenhum ficheiro em querentena.")
         return
-    filepath = os.path.join(DIRETORIO_QUARENTENA, selected_file)
+    caminho_ficheiro = os.path.join(DIRETORIO_QUARENTENA, ficheiro_selecionado)
     try:
-        os.remove(filepath)
-        log_atividade(f"Arquivo removido da quarentena: {selected_file}")
-        messagebox.showinfo("Remoção", f"Arquivo removido: {selected_file}")
+        os.remove(caminho_ficheiro)
+        log_atividade(f"Ficheiro removido da quarentena: {ficheiro_selecionado}")
+        messagebox.showinfo("Remoção", f"Ficheiro removido: {ficheiro_selecionado}")
         atualizar_lista_quarentena()
     except FileNotFoundError:
-        messagebox.showerror("Erro", "Arquivo não encontrado na quarentena.")
+        messagebox.showerror("Erro", "Ficheiro não encontrado na quarentena.")
     except PermissionError:
-        messagebox.showerror("Erro", "Sem permissão para remover o arquivo da quarentena.")
+        messagebox.showerror("Erro", "Sem permissão para remover o ficheiro da quarentena.")
     except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao remover o arquivo: {e}")
+        messagebox.showerror("Erro", f"Erro ao remover o ficheiro: {e}")
 
-# Atualiza a lista de arquivos na quarentena
+# Atualiza a lista de ficheiros na quarentena
 def atualizar_lista_quarentena():
     try:
-        files = os.listdir(DIRETORIO_QUARENTENA)
+        ficheiros = os.listdir(DIRETORIO_QUARENTENA)
         listbox_quarentena.delete(0, tk.END)
-        for file in files:
-            listbox_quarentena.insert(tk.END, file)
+        for ficheiro in ficheiros:
+            listbox_quarentena.insert(tk.END, ficheiro)
     except FileNotFoundError:
         print("Diretório de quarentena não encontrado.")
     except Exception as e:
@@ -252,7 +282,7 @@ def main():
     verificar_diretorios()
 
     root = tk.Tk()
-    root.title("Antivírus Simples")
+    root.title("ThreatDetect")
     root.resizable(True, True)  # Agora a janela pode ser redimensionada
 
     style = ttk.Style()
@@ -261,18 +291,18 @@ def main():
     frame_top = ttk.Frame(root, padding="10")
     frame_top.pack(fill=tk.X)
 
-    ttk.Label(frame_top, text="Antivírus Simples", font=("Helvetica", 16)).pack()
+    ttk.Label(frame_top, text="ThreatDetect", font=("Helvetica", 16)).pack()
 
     frame_middle = ttk.Frame(root, padding="10")
     frame_middle.pack(expand=True, fill=tk.BOTH)
 
-    btn_escolher = ttk.Button(frame_middle, text="Escolher Arquivos para Escanear", command=escolher_arquivos)
+    btn_escolher = ttk.Button(frame_middle, text="Escolher Ficheiros para Escanear", command=escolher_ficheiros)
     btn_escolher.pack(pady=5, fill=tk.X)
 
-    btn_remover = ttk.Button(frame_middle, text="Remover Arquivo da Quarentena", command=remover_da_quarentena)
+    btn_remover = ttk.Button(frame_middle, text="Remover Ficheiro da Quarentena", command=remover_da_quarentena)
     btn_remover.pack(pady=5, fill=tk.X)
 
-    ttk.Label(frame_middle, text="Arquivos em Quarentena:").pack()
+    ttk.Label(frame_middle, text="Ficheiros em Quarentena:").pack()
     listbox_quarentena = tk.Listbox(frame_middle, height=10)
     listbox_quarentena.pack(expand=True, fill=tk.BOTH)
 
