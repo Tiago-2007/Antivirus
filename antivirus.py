@@ -12,12 +12,17 @@ from tkinter import filedialog, messagebox, scrolledtext
 import shutil
 from tkinter import ttk
 from PIL import Image, ImageTk
+import threading
 import time  # Importação da biblioteca time
 import logging
 from logging.handlers import RotatingFileHandler
+import ctypes
+import winreg
 
 DIRETORIO_QUARENTENA = "quarentena"
 DIRETORIO_LOG = "logs.txt"
+
+
 
 # Configuração do logger com rotação de logs
 def configurar_logger():
@@ -53,7 +58,7 @@ def carregar_hashes_maliciosos():
         with open("hashes_maliciosos.txt", "r") as file:
             return {line.strip() for line in file}
     except FileNotFoundError:
-        mostrar_carinha_feliz("Nenhuma ameaça encontrada.")
+        
         return set()
     except Exception as e:
         print(f"Erro ao carregar hashes maliciosos: {e}")
@@ -102,7 +107,7 @@ def calcular_hash_eicar():
 
 
 # Escaneia os ficheiros especificados
-def escanear_ficheiros(caminhos_ficheiros):
+def scanear_ficheiros(caminhos_ficheiros):
     if not caminhos_ficheiros:
         messagebox.showerror("Erro", "Nenhum ficheiro selecionado.")
         return
@@ -128,7 +133,7 @@ def escanear_ficheiros(caminhos_ficheiros):
                 mover_para_quarentena(caminho_ficheiro)
                 mostrar_carinha_triste("Ameaça encontrada!!!")  # Quando heurística encontrar algo suspeito
             else:
-                mostrar_carinha_feliz(f"Nenhum ficheiro infectado encontrado: {caminho_ficheiro}")
+                mostrar_carinha_feliz(f"Nenhuma ameaça encontrada")
 
 # Move o ficheiro para a quarentena
 def mover_para_quarentena(caminho_ficheiro):
@@ -138,8 +143,6 @@ def mover_para_quarentena(caminho_ficheiro):
         if os.path.exists(destino):
             raise FileExistsError("O ficheiro já existe na quarentena.")
         shutil.move(caminho_ficheiro, destino)
-        log_atividade(f"Ficheiro infectado encontrado e movido para quarentena: {caminho_ficheiro}")
-        messagebox.showwarning("ALERTA", f"Ficheiro infectado encontrado e movido para quarentena: {caminho_ficheiro}")
         atualizar_lista_quarentena()
     except FileNotFoundError:
         messagebox.showerror("Erro", "Ficheiro não encontrado para mover para a quarentena.")
@@ -172,11 +175,11 @@ def heuristica_possivel(caminho_ficheiro):
 def log_atividade(mensagem):
     logging.info(mensagem)
 
-# Escolher múltiplos ficheiros para escanear
+# Escolher múltiplos ficheiros para scanear
 def escolher_ficheiros():
-    caminhos_ficheiros = filedialog.askopenfilenames(title="Escolha os ficheiros para escanear")
+    caminhos_ficheiros = filedialog.askopenfilenames(title="Escolha os ficheiros para scanear")
     if caminhos_ficheiros:
-        escanear_ficheiros(caminhos_ficheiros)
+        scanear_ficheiros(caminhos_ficheiros)
 
 # Remover ficheiros da quarentena
 def remover_da_quarentena():
@@ -206,8 +209,8 @@ def atualizar_lista_quarentena():
             listbox_quarentena.insert(tk.END, ficheiro)
     except FileNotFoundError:
         print("Diretório de quarentena não encontrado.")
-    except Exception as e:
-        print(f"Erro ao atualizar a lista de quarentena: {e}")
+
+    threading.Timer(1, atualizar_lista_quarentena).start()  # Chama novamente em 1 segundo
 
 # Mostra uma carinha feliz em uma janela separada
 janela_feliz_instancia = None  # Variável global para controlar a instância da janela
@@ -272,18 +275,46 @@ def mostrar_carinha_triste(mensagem):
     # Fecha a janela ao clicar em "OK"
     btn_ok = ttk.Button(janela_triste_instancia, text="OK", command=janela_triste_instancia.destroy)
     btn_ok.pack(pady=10)
+    
+def verificar_modo_escuro():
+    """Verifica se o Windows está no modo escuro"""
+    try:
+        # Acessa o registro do Windows
+        chave = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize")
+        valor, _ = winreg.QueryValueEx(chave, "AppsUseLightTheme")
+        winreg.CloseKey(chave)
+        return valor == 0  # 0 = Modo escuro, 1 = Modo claro
+    except Exception as e:
+        print(f"Erro ao verificar tema do Windows: {e}")
+        return False  # Padrão para claro se falhar
+def atualizar_tema(root):
+    """Aplica o tema com base no modo do Windows"""
+    if verificar_modo_escuro():
+        root.configure(bg="black")
+        style.configure("TFrame", background="black")
+        style.configure("TLabel", background="black", foreground="white")
+        style.configure("TButton", background="gray", foreground="white")
+        listbox_quarentena.configure(bg="black", fg="white")
+    else:
+        root.configure(bg="white")
+        style.configure("TFrame", background="white")
+        style.configure("TLabel", background="white", foreground="black")
+        style.configure("TButton", background="lightgray", foreground="black")
+        listbox_quarentena.configure(bg="white", fg="black")
+
+    # Atualiza a cada 10 segundos para verificar mudanças no tema
+    root.after(10000, lambda: atualizar_tema(root))
 
 # Configuração da interface gráfica
 def main():
-    global listbox_quarentena
+    global listbox_quarentena, style
 
-    configurar_logger()  # Chama a função para configurar o logger
-
+    configurar_logger()
     verificar_diretorios()
-
+    
     root = tk.Tk()
     root.title("ThreatDetect")
-    root.resizable(True, True)  # Agora a janela pode ser redimensionada
+    root.resizable(True, True)
 
     style = ttk.Style()
     style.theme_use("clam")
@@ -296,7 +327,7 @@ def main():
     frame_middle = ttk.Frame(root, padding="10")
     frame_middle.pack(expand=True, fill=tk.BOTH)
 
-    btn_escolher = ttk.Button(frame_middle, text="Escolher Ficheiros para Escanear", command=escolher_ficheiros)
+    btn_escolher = ttk.Button(frame_middle, text="Escolher Ficheiros para scanear", command=escolher_ficheiros)
     btn_escolher.pack(pady=5, fill=tk.X)
 
     btn_remover = ttk.Button(frame_middle, text="Remover Ficheiro da Quarentena", command=remover_da_quarentena)
@@ -310,6 +341,7 @@ def main():
     frame_bottom.pack(fill=tk.X)
     
     atualizar_lista_quarentena()
+    atualizar_tema(root)  # Aplica o tema no início e agenda verificações
 
     root.mainloop()
 
