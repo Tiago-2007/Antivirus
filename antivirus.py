@@ -22,8 +22,6 @@ import winreg
 DIRETORIO_QUARENTENA = "quarentena"
 DIRETORIO_LOG = "logs.txt"
 
-
-
 # Configuração do logger com rotação de logs
 def configurar_logger():
     logger = logging.getLogger()
@@ -58,7 +56,6 @@ def carregar_hashes_maliciosos():
         with open("hashes_maliciosos.txt", "r") as file:
             return {line.strip() for line in file}
     except FileNotFoundError:
-        
         return set()
     except Exception as e:
         print(f"Erro ao carregar hashes maliciosos: {e}")
@@ -77,24 +74,6 @@ def verificar_diretorios():
     except Exception as e:
         print(f"Erro ao verificar/criar diretórios: {e}")
 
-# Função para calcular o hash SHA-256 de um ficheiro
-def calcular_hash(caminho_ficheiro):
-    sha256 = hashlib.sha256()
-    try:
-        with open(caminho_ficheiro, "rb") as f:
-            while chunk := f.read(8192):
-                sha256.update(chunk)
-    except FileNotFoundError:
-        print(f"Ficheiro não encontrado: {caminho_ficheiro}")
-        return None
-    except PermissionError:
-        print(f"Sem permissão para aceder ao ficheiro: {caminho_ficheiro}")
-        return None
-    except Exception as e:
-        print(f"Erro ao calcular hash do ficheiro {caminho_ficheiro}: {e}")
-        return None
-    return sha256.hexdigest()
-
 # Testar a função de hash no arquivo EICAR
 def calcular_hash_eicar():
     eicar_file = filedialog.askopenfilename(title="Escolha o arquivo EICAR")  # Seleciona o arquivo EICAR
@@ -103,8 +82,6 @@ def calcular_hash_eicar():
         print("SHA-256 do arquivo EICAR:", eicar_hash)
     else:
         print("Nenhum arquivo EICAR selecionado.")
-
-
 
 # Escaneia os ficheiros especificados
 def scanear_ficheiros(caminhos_ficheiros):
@@ -185,7 +162,7 @@ def escolher_ficheiros():
 def remover_da_quarentena():
     ficheiro_selecionado = listbox_quarentena.get(tk.ACTIVE)
     if not ficheiro_selecionado:
-        messagebox.showinfo("Quarentena", "Nenhum ficheiro em querentena.")
+        messagebox.showinfo("Quarentena", "Nenhum ficheiro em quarentena.")
         return
     caminho_ficheiro = os.path.join(DIRETORIO_QUARENTENA, ficheiro_selecionado)
     try:
@@ -215,71 +192,38 @@ def atualizar_lista_quarentena():
 # Mostra uma carinha feliz em uma janela separada
 janela_feliz_instancia = None  # Variável global para controlar a instância da janela
 
-def mostrar_carinha_feliz(mensagem):
-    global janela_feliz_instancia
-
-    if janela_feliz_instancia and janela_feliz_instancia.winfo_exists():  # Verifica se já existe
-        janela_feliz_instancia.lift()  # Traz a janela existente para a frente
-        return
-
-    janela_feliz_instancia = tk.Toplevel()
-    janela_feliz_instancia.title("Nenhuma Ameaça Encontrada")
-    janela_feliz_instancia.geometry("300x300")
-
+def mostrar_carinha(mensagem, imagem_path, titulo):
+    """Exibe uma janela com uma imagem (feliz ou triste) e ajusta o tema."""
+    janela = tk.Toplevel()
+    janela.title(titulo)
+    janela.geometry("300x300")
+    
+    aplicar_tema(janela)
+    
     try:
-        imagem = Image.open("feliz.png")
+        imagem = Image.open(imagem_path)
         imagem = imagem.resize((150, 150), Image.LANCZOS)
         img_tk = ImageTk.PhotoImage(imagem)
-        label_imagem = tk.Label(janela_feliz_instancia, image=img_tk)
+        label_imagem = tk.Label(janela, image=img_tk, bg=janela.cget("bg"))
         label_imagem.image = img_tk
         label_imagem.pack(pady=10)
     except FileNotFoundError:
-        tk.Label(janela_feliz_instancia, text="Imagem não encontrada!", font=("Helvetica", 12)).pack(pady=10)
-    except Exception as e:
-        tk.Label(janela_feliz_instancia, text=f"Erro ao carregar imagem: {e}", font=("Helvetica", 12)).pack(pady=10)
-
-    tk.Label(janela_feliz_instancia, text=mensagem, font=("Helvetica", 14)).pack(pady=10)
-
-    # Fecha a janela ao clicar em "OK"
-    btn_ok = ttk.Button(janela_feliz_instancia, text="OK", command=janela_feliz_instancia.destroy)
+        tk.Label(janela, text="Imagem não encontrada!", font=("Helvetica", 12), bg=janela.cget("bg"), fg="red").pack(pady=10)
+    
+    tk.Label(janela, text=mensagem, font=("Helvetica", 14), bg=janela.cget("bg"), fg="white" if verificar_modo_escuro() else "black").pack(pady=10)
+    
+    btn_ok = ttk.Button(janela, text="OK", command=janela.destroy)
     btn_ok.pack(pady=10)
 
-# Mostra uma carinha triste em uma janela separada
-janela_triste_instancia = None  # Variável global para controlar a instância da janela
+def mostrar_carinha_feliz(mensagem):
+    mostrar_carinha(mensagem, "feliz.png", "Nenhuma Ameaça Encontrada")
 
 def mostrar_carinha_triste(mensagem):
-    global janela_triste_instancia
+    mostrar_carinha(mensagem, "triste.png", "Ameaça Encontrada!!!")
 
-    if janela_triste_instancia and janela_triste_instancia.winfo_exists():  # Verifica se já existe
-        janela_triste_instancia.lift()  # Traz a janela existente para a frente
-        return
-
-    janela_triste_instancia = tk.Toplevel()
-    janela_triste_instancia.title("Ameaça Encontrada!!!")
-    janela_triste_instancia.geometry("300x300")
-
-    try:
-        imagem = Image.open("triste.png")  # A imagem "triste.png" deve estar no mesmo diretório
-        imagem = imagem.resize((150, 150), Image.LANCZOS)
-        img_tk = ImageTk.PhotoImage(imagem)
-        label_imagem = tk.Label(janela_triste_instancia, image=img_tk)
-        label_imagem.image = img_tk
-        label_imagem.pack(pady=10)
-    except FileNotFoundError:
-        tk.Label(janela_triste_instancia, text="Imagem não encontrada!", font=("Helvetica", 12)).pack(pady=10)
-    except Exception as e:
-        tk.Label(janela_triste_instancia, text=f"Erro ao carregar imagem: {e}", font=("Helvetica", 12)).pack(pady=10)
-
-    tk.Label(janela_triste_instancia, text=mensagem, font=("Helvetica", 14)).pack(pady=10)
-
-    # Fecha a janela ao clicar em "OK"
-    btn_ok = ttk.Button(janela_triste_instancia, text="OK", command=janela_triste_instancia.destroy)
-    btn_ok.pack(pady=10)
-    
 def verificar_modo_escuro():
     """Verifica se o Windows está no modo escuro"""
     try:
-        # Acessa o registro do Windows
         chave = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize")
         valor, _ = winreg.QueryValueEx(chave, "AppsUseLightTheme")
         winreg.CloseKey(chave)
@@ -287,6 +231,14 @@ def verificar_modo_escuro():
     except Exception as e:
         print(f"Erro ao verificar tema do Windows: {e}")
         return False  # Padrão para claro se falhar
+
+def aplicar_tema(janela):
+    """Aplica o tema do Windows na janela."""
+    if verificar_modo_escuro():
+        janela.configure(bg="black")
+    else:
+        janela.configure(bg="white")
+
 def atualizar_tema(root):
     """Aplica o tema com base no modo do Windows"""
     if verificar_modo_escuro():
