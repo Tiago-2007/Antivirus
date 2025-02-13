@@ -1,16 +1,1 @@
-Logs de Atividades:
-Detecção heurística: arquivo suspeito encontrado: C:/Users/ESCOLA/Downloads/DiscordSetup.exe
-Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Downloads/DiscordSetup.exe
-Arquivo removido da quarentena: DiscordSetup.exe
-Detecção heurística: arquivo suspeito encontrado: C:/Users/ESCOLA/Downloads/python-3.13.0-amd64.exe
-Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Downloads/python-3.13.0-amd64.exe
-Arquivo removido da quarentena: python-3.13.0-amd64.exe
-Detecção heurística: arquivo suspeito encontrado: C:/Users/ESCOLA/AppData/Roaming/.minecraft/TLauncher.exe
-Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/AppData/Roaming/.minecraft/TLauncher.exe
-Arquivo removido da quarentena: TLauncher.exe
-Detecção heurística: arquivo suspeito encontrado: C:/Users/ESCOLA/Downloads/OperaGXSetup (1).exe
-Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Downloads/OperaGXSetup (1).exe
-2025-01-26 19:52:54,790 - Arquivo removido da quarentena: OperaGXSetup (1).exe
-2025-01-26 20:25:11,283 - Detecção heurística: arquivo suspeito encontrado: C:/Program Files (x86)/Epic Games/Launcher/Portal/Binaries/Win32/EpicGamesLauncher.exe
-2025-01-26 20:25:11,292 - Arquivo infectado encontrado e movido para quarentena: C:/Program Files (x86)/Epic Games/Launcher/Portal/Binaries/Win32/EpicGamesLauncher.exe
-2025-01-26 20:25:23,650 - Arquivo removido da quarentena: EpicGamesLauncher.exe
+2025-02-13 16:49:31,891 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Documents/eicar.com

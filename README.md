@@ -25,4 +25,4 @@ Ele possui uma interface gráfica (GUI) utilizando Tkinter, permitindo que os ut
 ![Sad Face](triste.png)
 
 ### Janela do AntiVirus
-![Antivirus](Antivirus.png)
+![Antivirus](antivirus.png)

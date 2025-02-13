@@ -1,0 +1,59 @@
+Logs de Atividades:
+Detecção heurística: arquivo suspeito encontrado: C:/Users/ESCOLA/Downloads/DiscordSetup.exe
+Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Downloads/DiscordSetup.exe
+Arquivo removido da quarentena: DiscordSetup.exe
+Detecção heurística: arquivo suspeito encontrado: C:/Users/ESCOLA/Downloads/python-3.13.0-amd64.exe
+Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Downloads/python-3.13.0-amd64.exe
+Arquivo removido da quarentena: python-3.13.0-amd64.exe
+Detecção heurística: arquivo suspeito encontrado: C:/Users/ESCOLA/AppData/Roaming/.minecraft/TLauncher.exe
+Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/AppData/Roaming/.minecraft/TLauncher.exe
+Arquivo removido da quarentena: TLauncher.exe
+Detecção heurística: arquivo suspeito encontrado: C:/Users/ESCOLA/Downloads/OperaGXSetup (1).exe
+Arquivo infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Downloads/OperaGXSetup (1).exe
+2025-01-26 19:52:54,790 - Arquivo removido da quarentena: OperaGXSetup (1).exe
+2025-01-26 20:25:11,283 - Detecção heurística: arquivo suspeito encontrado: C:/Program Files (x86)/Epic Games/Launcher/Portal/Binaries/Win32/EpicGamesLauncher.exe
+2025-01-26 20:25:11,292 - Arquivo infectado encontrado e movido para quarentena: C:/Program Files (x86)/Epic Games/Launcher/Portal/Binaries/Win32/EpicGamesLauncher.exe
+2025-01-26 20:25:23,650 - Arquivo removido da quarentena: EpicGamesLauncher.exe
+2025-02-06 17:18:39,616 - Ficheiro removido da quarentena: Novo Documento de Texto.txt
+2025-02-06 17:19:31,531 - Ficheiro removido da quarentena: Novo Documento de Texto - Cópia (2).txt
+2025-02-06 17:19:38,558 - Ficheiro removido da quarentena: Novo Documento de Texto - Cópia (3).txt
+2025-02-06 17:19:42,152 - Ficheiro removido da quarentena: Novo Documento de Texto - Cópia (4).txt
+2025-02-06 17:19:45,488 - Ficheiro removido da quarentena: Novo Documento de Texto - Cópia.txt
+2025-02-06 17:19:48,590 - Ficheiro removido da quarentena: Novo Documento de Texto.txt
+2025-02-10 16:28:42,787 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:28:42,790 - Ficheiro infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:32:26,416 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/AntiVirus/quarentena/eicar.com
+2025-02-10 16:34:43,347 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:34:43,349 - Ficheiro infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:37:05,356 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:37:05,358 - Ficheiro infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:37:54,111 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:37:54,113 - Ficheiro infectado encontrado e movido para quarentena: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:38:43,121 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:49:31,782 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:50:10,131 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/PAP/yara rules.txt
+2025-02-10 16:54:50,432 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 16:56:30,282 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 17:02:13,207 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar - Cópia.com
+2025-02-10 17:02:17,111 - Ficheiro removido da quarentena: eicar - Cópia.com
+2025-02-10 17:33:45,996 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 17:39:37,996 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/yara rules.txt
+2025-02-10 17:41:08,061 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 17:42:55,476 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/yara rules.txt
+2025-02-10 17:44:36,677 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 17:47:21,750 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/yara rules.txt
+2025-02-10 22:17:24,461 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-10 22:56:27,136 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-11 15:28:32,380 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-11 16:18:30,262 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
+2025-02-11 16:38:33,386 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar2.com
+2025-02-11 18:33:18,558 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/carafeleliz3.png
+2025-02-11 18:35:25,088 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/carafeleliz3.png
+2025-02-11 18:35:52,524 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar2.com
+2025-02-11 18:40:03,839 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar2.com
+2025-02-12 10:05:04,494 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/carafeleliz3.png
+2025-02-12 10:05:11,845 - Ficheiro removido da quarentena: carafeleliz3.png
+2025-02-12 16:21:17,026 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar2.com
+2025-02-13 09:01:16,473 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/cibersegurança.txt
+2025-02-13 09:01:24,435 - Ficheiro removido da quarentena: cibersegurança.txt
+2025-02-13 09:06:09,156 - Ficheiro modificado recentemente e suspeito: C:/Users/ESCOLA/Desktop/eicar.com
