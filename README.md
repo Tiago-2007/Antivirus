@@ -1,28 +1,28 @@
 # AntiVirus 
-## Versão 1.0.0
+## Version 1.0.0
 
-Repository for Advanced Antivirus Development in Python
+Repository for advanced antivirus development in Python
 
 ## Summary
 
-Este repositório contém o desenvolvimento de um sistema avançado de antivírus utilizando Python.  
-O projeto tem como objetivo detetar ameaças por meio de verificação de hash, análise heurística.  
-Ele possui uma interface gráfica (GUI) utilizando Tkinter, permitindo que os utilizadores façam varreduras e gerenciem ameaças facilmente.
+This repository contains the development of an advanced antivirus system using Python.  
+The project aims to detect threats through hash verification, heuristic analysis.  
+It has a graphical interface (GUI) using Tkinter, allowing users to scan and manage threats easily.
 
 ### Important Dates
 
-* Lançamento inicial - 10/02/2025
+* Antivirus release - 31/10/2024
 
 ### Commits
 
-- **1 - Primeira versão do antivírus**: Added the code
+- **1 - First version of the antivirus**: Antivirus initial structure
 
 
-### Nenhuma ameaça detectada:
+### No threats detected:
 ![Happy Face](feliz.png)
 
-### Ameaça detectada:
+### Threat detected:
 ![Sad Face](triste.png)
 
-### Janela do AntiVirus
-![Antivirus](antivirus.png)
+### AntiVirus window
+![Antivirus](ThreatDetect.png)
