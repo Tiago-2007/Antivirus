@@ -17,12 +17,5 @@ It has a graphical interface (GUI) using Tkinter, allowing users to scan and man
 
 - **1 - First version of the antivirus**: Antivirus initial structure
 
-
-### No threats detected:
-![Happy Face](feliz.png)
-
-### Threat detected:
-![Sad Face](triste.png)
-
-### AntiVirus window
+### AntiVirus Image
 ![Antivirus](ThreatDetect.png)

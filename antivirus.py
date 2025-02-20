@@ -1,9 +1,8 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     Programador............: Tiago Machado
     Data...................: 31/10/2024
-    Observações............: Um antivirus que identifica se o ficheiro ta corrompido, se tem algum malware
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    Observações............: Um antivirus que identifica se o ficheiro ta corrompido, se tem algum malware, e se tiver remove-o do disco
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 import os
 import hashlib
@@ -13,11 +12,12 @@ import shutil
 from tkinter import ttk
 from PIL import Image, ImageTk
 import threading
-import time  # Importação da biblioteca time
+import time  
 import logging
 from logging.handlers import RotatingFileHandler
 import ctypes
 import winreg
+
 
 DIRETORIO_QUARENTENA = "quarentena"
 DIRETORIO_LOG = "logs.txt"
@@ -42,8 +42,8 @@ def calcular_hash(caminho_ficheiro):
     except FileNotFoundError:
         print(f"Ficheiro não encontrado: {caminho_ficheiro}")
         return None
-    except PermissionError:
-        print(f"Sem permissão para aceder ao ficheiro: {caminho_ficheiro}")
+    except PermissionError as e:
+        messagebox.showerror("Erro de Permissão", f"Erro ao acessar o ficheiro: {e}")        
         return None
     except Exception as e:
         print(f"Erro ao calcular hash do ficheiro {caminho_ficheiro}: {e}")
@@ -130,22 +130,62 @@ def mover_para_quarentena(caminho_ficheiro):
     except Exception as e:
         messagebox.showerror("Erro", f"Não foi possível mover o ficheiro para a quarentena: {e}")
 
-# Função de detecção heurística (exemplo simples)
+# Função de detecção heurística (exemplo)
 def heuristica_possivel(caminho_ficheiro):
     try:
-        if caminho_ficheiro.endswith(('.exe', '.bat', '.cmd', '.com')) and os.path.getsize(caminho_ficheiro) > 1e6:
-            log_atividade(f"Detecção heurística: ficheiro suspeito encontrado: {caminho_ficheiro}")
-            return True
-
-        # Verificação se o ficheiro foi modificado nas últimas 24 horas
+        tamanho_ficheiro = os.path.getsize(caminho_ficheiro)
         tempo_modificacao = os.path.getmtime(caminho_ficheiro)
-        if tempo_modificacao > (time.time() - 60 * 60 * 24):  # Modificado nas últimas 24 horas
-            log_atividade(f"Ficheiro modificado recentemente e suspeito: {caminho_ficheiro}")
+        
+        # Verifica permissões do ficheiro
+        if not os.access(caminho_ficheiro, os.R_OK):
+            log_atividade(f"Erro de permissão ao acessar ficheiro: {caminho_ficheiro}")
+            raise PermissionError(f"Sem permissão de leitura para: {caminho_ficheiro}")
+            
+        # Verifica lista de hashes maliciosos
+        hashes_maliciosos = carregar_hashes_maliciosos()
+        hash_ficheiro = calcular_hash(caminho_ficheiro)
+        if hash_ficheiro in hashes_maliciosos:
+            log_atividade(f"Ficheiro malicioso identificado por hash SHA-256: {caminho_ficheiro}")
             return True
+        
+        # Lista de aplicações confiáveis
+        aplicacoes_confiaveis = [
+            'EpicGamesLauncher.exe',
+            'EpicWebHelper.exe',
+            'EpicOnlineServices.exe',
+            'UnrealEditor.exe'
+        ]
+        
+        nome_ficheiro = os.path.basename(caminho_ficheiro)
+        if nome_ficheiro in aplicacoes_confiaveis:
+            log_atividade(f"Aplicação confiável identificada: {caminho_ficheiro}")
+            return False
+            
+        # Lista expandida de extensões perigosas
+        extensoes_perigosas = ('.exe', '.bat', '.cmd', '.com', '.dll', '.vbs', '.js', 
+                             '.msi', '.scr', '.ps1', '.wsf', '.hta', '.reg')
+        
+        if caminho_ficheiro.lower().endswith(extensoes_perigosas):
+            # Aumenta o limite para 5MB para reduzir falsos positivos
+            if tamanho_ficheiro > 5 * 1024 * 1024:  # 5MB em bytes
+                log_atividade(f"Ficheiro suspeito (executável maior que 5MB): {caminho_ficheiro}")
+                return True
+            
+            # Aumenta o período para 15 dias
+            if tempo_modificacao > (time.time() - 60 * 60 * 24 * 15):
+                log_atividade(f"Ficheiro suspeito (modificado nos últimos 15 dias): {caminho_ficheiro}")
+                return True
+        
     except FileNotFoundError:
-        print(f"Ficheiro não encontrado para análise heurística: {caminho_ficheiro}")
+        log_atividade(f"Ficheiro não encontrado: {caminho_ficheiro}")
+        raise
+    except PermissionError as e:
+        log_atividade(f"Erro de permissão: {str(e)}")
+        raise
     except Exception as e:
-        print(f"Erro na análise heurística para {caminho_ficheiro}: {e}")
+        log_atividade(f"Erro inesperado na análise heurística: {str(e)}")
+        raise
+    
     return False
 
 # Log de atividades com rotação
@@ -153,10 +193,20 @@ def log_atividade(mensagem):
     logging.info(mensagem)
 
 # Escolher múltiplos ficheiros para scanear
-def escolher_ficheiros():
-    caminhos_ficheiros = filedialog.askopenfilenames(title="Escolha os ficheiros para scanear")
-    if caminhos_ficheiros:
-        scanear_ficheiros(caminhos_ficheiros)
+def escolher_ficheiro():
+    # Permite selecionar apenas um ficheiro
+    caminho_ficheiro = filedialog.askopenfilename(
+        title="Escolha um ficheiro para scanear",
+        multiple=False  # Garante que apenas um ficheiro pode ser selecionado
+    )
+    
+    if caminho_ficheiro:
+        # Verifica se o utilizador tentou de alguma forma selecionar múltiplos ficheiros
+        if isinstance(caminho_ficheiro, tuple) and len(caminho_ficheiro) > 1:
+            messagebox.showwarning("Aviso", "Um ficheiro de cada vez")
+            return
+        
+        scanear_ficheiros([caminho_ficheiro])  # Passa como lista para manter compatibilidade
 
 # Remover ficheiros da quarentena
 def remover_da_quarentena():
@@ -279,7 +329,7 @@ def main():
     frame_middle = ttk.Frame(root, padding="10")
     frame_middle.pack(expand=True, fill=tk.BOTH)
 
-    btn_escolher = ttk.Button(frame_middle, text="Escolher Ficheiros para scanear", command=escolher_ficheiros)
+    btn_escolher = ttk.Button(frame_middle, text="Escolher Ficheiros para scanear", command=escolher_ficheiro)
     btn_escolher.pack(pady=5, fill=tk.X)
 
     btn_remover = ttk.Button(frame_middle, text="Remover Ficheiro da Quarentena", command=remover_da_quarentena)
